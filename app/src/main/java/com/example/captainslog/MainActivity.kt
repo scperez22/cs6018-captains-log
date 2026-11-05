@@ -1,6 +1,7 @@
 
 package com.example.captainslog
 
+import com.example.captainslog.ui.RecordScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -46,7 +47,9 @@ fun CaptainsLogApp() {
                 onOpenLog = { id ->
                     navController.navigate("detail/$id")
                 },
-                onRecord = {},
+                onRecord = {
+                    navController.navigate("record")
+                },
                 onSearch = {
                     navController.navigate("search")
                 },
@@ -75,6 +78,16 @@ fun CaptainsLogApp() {
                 onOpenLog = { id ->
                     navController.navigate("detail/$id")
                 },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Record
+        composable("record") {
+            RecordScreen(
+                viewModel = viewModel,
                 onBack = {
                     navController.popBackStack()
                 }
