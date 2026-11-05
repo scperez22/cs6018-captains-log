@@ -11,11 +11,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+
 import com.example.captainslog.ui.CaptainsLogViewModel
-import com.example.captainslog.ui.LogListScreen
 import com.example.captainslog.ui.LogDetailScreen
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import com.example.captainslog.ui.LogListScreen
+import com.example.captainslog.ui.SearchScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,37 +39,47 @@ fun CaptainsLogApp() {
         navController = navController,
         startDestination = "logs"
     ) {
+        // Home screen
         composable("logs") {
             LogListScreen(
                 viewModel = viewModel,
-                onOpenLog = { logId ->
-                    navController.navigate("log/$logId")
+                onOpenLog = { id ->
+                    navController.navigate("detail/$id")
                 },
                 onRecord = {},
-                onSearch = {},
+                onSearch = {
+                    navController.navigate("search")
+                },
                 onFriends = {}
             )
         }
 
-        composable("log/{logId}") { backStackEntry ->
-            val logId = backStackEntry.arguments?.getString("logId")
+        // Log detail screen
+        composable("detail/{logId}") { backStackEntry ->
+            val logId =
+                backStackEntry.arguments?.getString("logId") ?: ""
 
-            val myLogs by viewModel.myLogs.collectAsState()
-            val sharedLogs by viewModel.sharedLogs.collectAsState()
+            LogDetailScreen(
+                viewModel = viewModel,
+                logId = logId,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
 
-            val log = (myLogs + sharedLogs).find {
-                it.id == logId
-            }
-
-            if (log != null) {
-                LogDetailScreen(
-                    log = log,
-                    viewModel = viewModel,
-                    onBack = {
-                        navController.popBackStack()
-                    }
-                )
-            }
+        // Search screen
+        composable("search") {
+            SearchScreen(
+                viewModel = viewModel,
+                onOpenLog = { id ->
+                    navController.navigate("detail/$id")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
+
