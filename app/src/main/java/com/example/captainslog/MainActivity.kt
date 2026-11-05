@@ -1,3 +1,4 @@
+
 package com.example.captainslog
 
 import android.os.Bundle
@@ -10,15 +11,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+
 import com.example.captainslog.ui.CaptainsLogViewModel
 import com.example.captainslog.ui.LogDetailScreen
 import com.example.captainslog.ui.LogListScreen
+import com.example.captainslog.ui.SearchScreen
 
-
-class MainActivity : ComponentActivity(){
-    override fun onCreate(savedInstanceState: Bundle?){
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             MaterialTheme {
                 CaptainsLogApp()
@@ -28,24 +31,55 @@ class MainActivity : ComponentActivity(){
 }
 
 @Composable
-fun CaptainsLogApp(){
+fun CaptainsLogApp() {
     val navController = rememberNavController()
     val viewModel: CaptainsLogViewModel = viewModel()
 
-    NavHost(navController, startDestination = "logs"){
-        composable("logs"){
+    NavHost(
+        navController = navController,
+        startDestination = "logs"
+    ) {
+        // Home screen
+        composable("logs") {
             LogListScreen(
                 viewModel = viewModel,
-                onOpenLog = { id -> navController.navigate("detail/$id") },
-                onRecord = { },
-                onSearch = { },
-                onFriends = { },
-                )
+                onOpenLog = { id ->
+                    navController.navigate("detail/$id")
+                },
+                onRecord = {},
+                onSearch = {
+                    navController.navigate("search")
+                },
+                onFriends = {}
+            )
         }
-        composable("detail/{logId") { backStackEntry ->
-            val logId = backStackEntry.arguments?.getString("logId") ?: ""
-            LogDetailScreen(viewModel,logId, onBack = { navController.popBackStack() })
+
+        // Log detail screen
+        composable("detail/{logId}") { backStackEntry ->
+            val logId =
+                backStackEntry.arguments?.getString("logId") ?: ""
+
+            LogDetailScreen(
+                viewModel = viewModel,
+                logId = logId,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // Search screen
+        composable("search") {
+            SearchScreen(
+                viewModel = viewModel,
+                onOpenLog = { id ->
+                    navController.navigate("detail/$id")
+                },
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
-
 }
+
