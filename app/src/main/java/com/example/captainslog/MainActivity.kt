@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.captainslog.ui.CaptainsLogViewModel
+import com.example.captainslog.ui.LogDetailScreen
 import com.example.captainslog.ui.LogListScreen
 
 
@@ -35,11 +36,15 @@ fun CaptainsLogApp(){
         composable("logs"){
             LogListScreen(
                 viewModel = viewModel,
-                onOpenLog = { },
+                onOpenLog = { id -> navController.navigate("detail/$id") },
                 onRecord = { },
                 onSearch = { },
                 onFriends = { },
                 )
+        }
+        composable("detail/{logId") { backStackEntry ->
+            val logId = backStackEntry.arguments?.getString("logId") ?: ""
+            LogDetailScreen(viewModel,logId, onBack = { navController.popBackStack() })
         }
     }
 
