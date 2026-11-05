@@ -1,6 +1,7 @@
 
 package com.example.captainslog
 
+import com.example.captainslog.ui.FriendsScreen
 import com.example.captainslog.ui.RecordScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -53,7 +54,9 @@ fun CaptainsLogApp() {
                 onSearch = {
                     navController.navigate("search")
                 },
-                onFriends = {}
+                onFriends = {
+                    navController.navigate("friends")
+                }
             )
         }
 
@@ -87,6 +90,16 @@ fun CaptainsLogApp() {
         // Record
         composable("record") {
             RecordScreen(
+                viewModel = viewModel,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        // friends
+        composable("friends") {
+            FriendsScreen(
                 viewModel = viewModel,
                 onBack = {
                     navController.popBackStack()
